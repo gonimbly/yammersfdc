@@ -1,0 +1,37 @@
+<apex:page showHeader="true" sidebar="true" standardController="Account" >
+  <script type="text/javascript" data-app-id="###########" src="https://assets.yammer.com/assets/platform_js_sdk.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script> 
+        //yammer sdk uses jquery as a dependency, so I want to eliminate any possible conflicts
+        var $j = jQuery.noConflict();
+        //necessary for adding events after dom elements loaded
+        $j( function() {
+            $j("#feed").click( function() { $j("#feedHolder").toggle() });
+        });
+        yam.connect.loginButton('#yammer-login', function (resp) { 
+            if (resp.authResponse) { 
+                console.log('pass');
+                yam.connect.embedFeed({
+                    container: '#embedded-feed',
+                    network: 'examplellc.com',
+                    feedType: 'group',
+                    feedId: '######',
+                    config: {
+                        use_sso: false,
+                        header: false,
+                        footer: false
+                    }
+                });
+            }
+            else {
+                console.log('fail');
+            }
+        }); 
+    </script>
+    <span id="yammer-login"></span>
+    <div id="feed">Yammer Feed</div>
+    <div id="feedHolder">
+        <div id="embedded-feed" style="width: 100%; height: 300px;"></div>
+    </div>
+    <apex:detail subject="{!account.Id}" />
+</apex:page>
